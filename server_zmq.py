@@ -3,14 +3,15 @@ import sys
 import time
 import zmq
 import socket
+import yaml
 from modules.ch341_linux_api import ONET8501
 
 
 def start_sever():
     try:
-        config = sys.argv[1]
+        config_path = sys.argv[1]
     except IndexError:
-        bus = 17
+        config_path = 'config.yaml'
 
     context = zmq.Context()
     socket_zmq = context.socket(zmq.REP)
@@ -18,11 +19,15 @@ def start_sever():
     socket_zmq.bind(f"tcp://*:{port}")
     print(f'ip = {socket.gethostbyname(socket.gethostname())}:{port}')
 
+    with open(config_path, 'r') as conf:
+        config = yaml.full_load(conf)
+        print(f"i2c bus = {config['bus']}, address = {config['address']}")
+
     try:
-        onet = ONET8501(bus_=bus, address=0x44)
+        onet = ONET8501(bus_=config['bus'], address=config['address'])
         status_ = True
     except Exception:
-        print(f"just server i2c {bus} not found")
+        print(f"just server i2c {config['bus']} or {config['address']} not found")
         status_ = False
 
     while True:
@@ -31,9 +36,9 @@ def start_sever():
         print(f"Received request: {message}")
 
         dict_to_send = {'out': None}
-        if status_:
-            onet.writeReg(message['address'], message['value'])
-            dict_to_send['out'] = onet.readReg(message['address'])
+        # if status_:
+            # onet.writeReg(message['reg_address'], message['value'])
+            # dict_to_send['out'] = onet.readReg(message['reg_address'])
 
         time.sleep(0.2)
         #  Send reply back to client
