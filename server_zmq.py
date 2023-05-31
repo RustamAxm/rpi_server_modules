@@ -7,6 +7,11 @@ import yaml
 from modules.ch341_linux_api import ONET8501
 
 
+def write_to_i2c(onet, message):
+    onet.writeReg(message['reg_address'], message['value'])
+    return onet.readReg(message['reg_address'])
+
+
 def start_sever():
     try:
         config_path = sys.argv[1]
@@ -36,9 +41,8 @@ def start_sever():
         print(f"Received request: {message}")
 
         dict_to_send = {'out': None}
-        # if status_:
-            # onet.writeReg(message['reg_address'], message['value'])
-            # dict_to_send['out'] = onet.readReg(message['reg_address'])
+        if status_:
+            dict_to_send['out'] = write_to_i2c(onet, message)
 
         time.sleep(0.2)
         #  Send reply back to client
