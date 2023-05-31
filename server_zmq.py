@@ -52,5 +52,6 @@ def start_sever():
         #  Send reply back to client
         socket_zmq.send_json(json.dumps(dict_to_send))
 
+
 if __name__ == '__main__':
     start_sever()
