@@ -8,8 +8,12 @@ from modules.ch341_linux_api import ONET8501
 
 
 def write_to_i2c(onet, message):
-    onet.writeReg(message['reg_address'], message['value'])
-    return onet.readReg(message['reg_address'])
+    try:
+        onet.writeReg(message['reg_address'], message['value'])
+        return onet.readReg(message['reg_address'])
+    except Exception as err:
+        print(f'{err} in write to bus')
+        return err.args
 
 
 def start_sever():
@@ -37,7 +41,7 @@ def start_sever():
 
     while True:
         #  Wait for next request from client
-        message = socket_zmq.recv_json()
+        message = json.loads(socket_zmq.recv_json())
         print(f"Received request: {message}")
 
         dict_to_send = {'out': None}
