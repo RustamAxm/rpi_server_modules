@@ -8,13 +8,27 @@ import Adafruit_ADS1x15
 from modules.ch341_linux_api import SmBusWrapper
 
 
-def write_to_i2c(onet, message):
+def write_to_onet(onet, message):
     try:
         onet.writeReg(message['reg_address'], message['value'])
         return onet.readReg(message['reg_address'])
     except Exception as err:
         print(f'{err} in write to bus')
         return err.args
+
+
+def read_in_onet(onet):
+    data = []
+    for i in range(16):
+        tmp = None
+        try:
+            tmp = onet.readReg(i)
+        except Exception as err:
+            print(f'{err} in write to bus')
+            tmp = err.args
+        data.append(tmp)
+
+    return data
 
 
 def get_adc_data(adc, gain=1):
@@ -60,15 +74,21 @@ def start_sever():
 
         dict_to_send = {'onet_out': None,
                         'adc_out': None}
-        if onet is not None:
-            dict_to_send['onet_out'] = write_to_i2c(onet, message)
-
-        if adc is not None:
+        time.sleep(0.1)
+        if message['just_get']:
             dict_to_send['adc_out'] = get_adc_data(adc)
+            dict_to_send['onet_out'] = read_in_onet(onet)
+            socket_zmq.send_json(json.dumps(dict_to_send))
+            continue
+        else:
+            if onet is not None:
+                dict_to_send['onet_out'] = write_to_onet(onet, message)
 
-        time.sleep(0.2)
-        #  Send reply back to client
-        socket_zmq.send_json(json.dumps(dict_to_send))
+            if adc is not None:
+                dict_to_send['adc_out'] = get_adc_data(adc)
+
+            #  Send reply back to client
+            socket_zmq.send_json(json.dumps(dict_to_send))
 
 
 if __name__ == '__main__':
