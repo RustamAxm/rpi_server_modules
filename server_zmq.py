@@ -59,12 +59,12 @@ def start_sever():
         print(f"Received request: {message}")
 
         dict_to_send = {'onet_out': None,
-                        'ads_out': None}
+                        'adc_out': None}
         if onet is not None:
             dict_to_send['onet_out'] = write_to_i2c(onet, message)
 
         if adc is not None:
-            dict_to_send['ads_out'] = get_adc_data(adc)
+            dict_to_send['adc_out'] = get_adc_data(adc)
 
         time.sleep(0.2)
         #  Send reply back to client
