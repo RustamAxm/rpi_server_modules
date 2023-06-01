@@ -16,14 +16,14 @@ socket = context.socket(zmq.REQ)
 socket.connect(f"tcp://{ip}:5555")
 
 #  Do 10 requests, waiting each time for a response
-for request in range(100):
+for request in range(20):
     if request % 2:
         dict_to_send = {'reg_address': 0x06,
-                        'value': 0x00,
+                        'value': 0x88,
                         'just_get': 1}
     else:
         dict_to_send = {'reg_address': 0x06,
-                        'value': 0x00,
+                        'value': 0x8f,
                         'just_get': 0}
 
     print(f"Sending request {request} …")

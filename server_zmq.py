@@ -53,19 +53,19 @@ def start_sever():
 
     with open(config_path, 'r') as conf:
         config = yaml.full_load(conf)
-        print(f"i2c bus = {config['bus']}, address = {config['address']}")
+        print(f"config = {config}")
 
     adc = None
     try:
-        adc = Adafruit_ADS1x15.ADS1015(address=0x48, busnum=config['bus'])
+        adc = Adafruit_ADS1x15.ADS1015(address=config['address_adc'], busnum=config['bus'])
     except Exception:
         print(f"just server i2c-ADC {config['bus']} or 0x48 not found")
 
     onet = None
     try:
-        onet = SmBusWrapper(bus_=config['bus'], address=config['address'])
+        onet = SmBusWrapper(bus_=config['bus'], address=config['address_onet'])
     except Exception:
-        print(f"just server i2c {config['bus']} or {config['address']} not found")
+        print(f"just server i2c {config['bus']} or {config['address_onet']} not found")
 
     while True:
         #  Wait for next request from client
