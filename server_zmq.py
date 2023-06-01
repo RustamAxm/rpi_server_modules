@@ -4,7 +4,8 @@ import time
 import zmq
 import socket
 import yaml
-from modules.ch341_linux_api import ONET8501
+
+from modules.ch341_linux_api import SmBusWrapper
 
 
 def write_to_i2c(onet, message):
@@ -33,7 +34,7 @@ def start_sever():
         print(f"i2c bus = {config['bus']}, address = {config['address']}")
 
     try:
-        onet = ONET8501(bus_=config['bus'], address=config['address'])
+        onet = SmBusWrapper(bus_=config['bus'], address=config['address'])
         status_ = True
     except Exception:
         print(f"just server i2c {config['bus']} or {config['address']} not found")

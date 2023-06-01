@@ -1,7 +1,7 @@
 from smbus2 import SMBus, i2c_msg
 
 
-class ONET8501:
+class SmBusWrapper:
     def __init__(self, bus_=17, address=0x44):
         self.bus = SMBus(bus_)
         self.i2c_addr = address
@@ -26,8 +26,8 @@ class ONET8501:
 
 
 if __name__ == '__main__':
-    mon1 = ONET8501(bus_=17, address=0x44)
-    mon2 = ONET8501(bus_=18, address=0x44)
+    mon1 = SmBusWrapper(bus_=17, address=0x44)
+    mon2 = SmBusWrapper(bus_=18, address=0x44)
     for i in range(16):
         print(mon1.read(i))
 
