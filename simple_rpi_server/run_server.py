@@ -29,6 +29,23 @@ class ServerHandler(BaseHTTPRequestHandler):
                 self.send_header('Content-type', 'text/plain')
                 self.end_headers()
                 self.wfile.write(b"OK")
+            elif self.path == "/data":
+                data_dict = json.loads(body.decode('utf-8'))
+                if 'on' in data_dict:
+                    pass
+                self.send_response(200)
+                self.send_header('Content-type', 'text/plain')
+                self.end_headers()
+                d = {'1': 1, '2': 2, '3': 3}
+                self.wfile.write(f"\n{d}\n".encode())
+            elif self.path == '/dataSend':
+                data_dict = json.loads(body.decode('utf-8'))
+                if 'on' in data_dict:
+                    pass
+                self.send_response(200)
+                self.send_header('Content-type', 'text/plain')
+                self.end_headers()
+                self.wfile.write(b"OK")
             else:
                 self.send_response(400, 'Bad Request: Method does not exist')
                 self.send_header('Content-Type', 'application/json')

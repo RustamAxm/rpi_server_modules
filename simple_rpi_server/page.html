@@ -29,11 +29,32 @@
                             document.getElementById("textstatus").textContent = `Led OFF: ${resp}`;
                         });
                     }
+
+                    function dataOn() {
+                        document.getElementById("textdata").textContent = "Making textdata...";
+                        httpPostAsync("data", JSON.stringify({ "on": true }), function(resp) {
+                            document.getElementById("textdata").textContent = `Text data: ${resp}`;
+                        });
+                    }
+
+                    function dataSend() {
+                        var dat = document.getElementById("datasend").value;
+                        httpPostAsync("dataSend", JSON.stringify({ "val": dat }), function(resp) {
+                            document.getElementById("testdata").textContent = `Test data: ${dat} ${resp}`;
+                        });
+                    }
+
               </script>
               <body>
                  <h2>Hello from the Raspberry Pi!</h2>
                  <p><button class="button button_led" onclick="ledOn();">Led ON</button></p>
                  <p><button class="button button_led" onclick="ledOff();">Led OFF</button></p>
-                 <span id="textstatus">Status: Ready</span>
+                 <p><button class="button text_data" onclick="dataOn();">Text data</button></p>
+                 <label for="datasend">dataSend:</label>
+                 <input type="text" id="datasend" name="dataSend" placeholder="Jane Doe">
+                 <p><button class="button send_data" onclick="dataSend();">send data</button></p>
+                 <p><span id="textstatus">Status: Ready</span></p>
+                 <p><span id="textdata">Text data: </span></p>
+                 <p><span id="testdata">Test data: </span></p>
               </body>
             </html>
