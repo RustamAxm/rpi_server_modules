@@ -1,0 +1,39 @@
+<html>
+              <style>html{font-family: Helvetica; display:inline-block; margin: 0px auto; text-align: center;}
+                 .button_led {display: inline-block; background-color: #e7bd3b; border: none; border-radius: 4px; color: white; padding: 16px 40px; text-decoration: none; font-size: 30px; margin: 2px; cursor: pointer;}
+              </style>
+              <script type="text/javascript" charset="utf-8">
+                    function httpPostAsync(method, params, callback) {
+                        var xmlHttp = new XMLHttpRequest();
+                        xmlHttp.onreadystatechange = function() {
+                            if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+                                callback(xmlHttp.responseText);
+                            else
+                                callback(`Error ${xmlHttp.status}`)
+                        }
+                        xmlHttp.open("POST", window.location.href + method, true);
+                        xmlHttp.setRequestHeader("Content-Type", "application/json");
+                        xmlHttp.send(params);
+                    }
+
+                    function ledOn() {
+                        document.getElementById("textstatus").textContent = "Making LED on...";
+                        httpPostAsync("led", JSON.stringify({ "on": true }), function(resp) {
+                            document.getElementById("textstatus").textContent = `Led ON: ${resp}`;
+                        });
+                    }
+
+                    function ledOff() {
+                        document.getElementById("textstatus").textContent = "Making LED off...";
+                        httpPostAsync("led", JSON.stringify({ "on": false }), function(resp) {
+                            document.getElementById("textstatus").textContent = `Led OFF: ${resp}`;
+                        });
+                    }
+              </script>
+              <body>
+                 <h2>Hello from the Raspberry Pi!</h2>
+                 <p><button class="button button_led" onclick="ledOn();">Led ON</button></p>
+                 <p><button class="button button_led" onclick="ledOff();">Led OFF</button></p>
+                 <span id="textstatus">Status: Ready</span>
+              </body>
+            </html>
